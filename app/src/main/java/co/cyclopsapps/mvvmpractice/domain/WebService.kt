@@ -1,6 +1,8 @@
 package co.cyclopsapps.mvvmpractice.domain
 
+import co.cyclopsapps.mvvmpractice.data.Restaurant
 import co.cyclopsapps.mvvmpractice.data.RestaurantList
+import retrofit2.http.GET
 import retrofit2.http.Query
 
 /**
@@ -8,5 +10,9 @@ import retrofit2.http.Query
  */
 interface WebService {
 
-    suspend fun getRestaurantByName(@Query(value = "s") restaurantName: String): RestaurantList
+    /*@GET()
+    suspend fun getRestaurantByName(@Query(value = "restaurant?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYiI6InJlc3RhdXJhbnRhcHAiLCJjaWQiOiIxIn0._ri2Dghqcg-O1Yja5GCTENti3XobgcvB7-psyZLpCtA") restaurantName: String): RestaurantList*/
+
+    @GET("restaurant?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYiI6InJlc3RhdXJhbnRhcHAiLCJjaWQiOiIxIn0._ri2Dghqcg-O1Yja5GCTENti3XobgcvB7-psyZLpCtA")
+    suspend fun fetchRestaurants() : List<Restaurant>
 }

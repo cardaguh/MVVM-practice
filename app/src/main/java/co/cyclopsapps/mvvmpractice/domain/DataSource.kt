@@ -6,6 +6,12 @@ import co.cyclopsapps.mvvmpractice.utils.Resource
 /**
  * Created by Carlos Daniel Agudelo on 11/10/2020.
  */
-interface DataSource {
-    suspend fun getRestaurantByName(restaurantName: String): Resource<List<Restaurant>>
+class DataSource(private val apiService: WebService) {
+    //suspend fun getRestaurantByName(restaurantName: String): Resource<List<Restaurant>>
+
+    suspend fun getRestaurants(): List<Restaurant> {
+        val restaurantList = apiService.fetchRestaurants()
+        return restaurantList
+    }
+
 }
