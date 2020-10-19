@@ -24,4 +24,6 @@ class RestaurantRepository {
     }
 
 
+    //suspend fun getRestaurant() = Response<RestaurantResponse>?
+
 }

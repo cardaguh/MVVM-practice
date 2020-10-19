@@ -47,6 +47,8 @@ class MainFragment : Fragment() {
                 is Resource.Loading -> {
 
                 }
+
+
             }
         })
     }

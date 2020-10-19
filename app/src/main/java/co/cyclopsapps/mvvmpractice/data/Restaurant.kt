@@ -14,7 +14,3 @@ data class Restaurant (
     val nombre: String = "",
     val description: String = ""
 )
-
-data class RestaurantList (
-    val restaurantList: List<Restaurant>
-)
