@@ -10,26 +10,35 @@ import java.lang.Exception
 /**
  * Created by Carlos Daniel Agudelo on 11/10/2020.
  */
-class MainViewModel(private val repo: Repo): ViewModel() {
+class MainViewModel: ViewModel(), CoroutineScope {
 
-    private val restaurantData = MutableLiveData<String>()
+    private val states: MutableLiveData<ScreenState<RestaurantState>> = MutableLiveData()
+    private val repository = RestaurantRepository()
 
-    fun setRestaurant(restaurantName: String) {
-        restaurantData.value = restaurantName
+    private val viewModelJob = Job()
+    override val coroutineContext: CoroutineContext
+        get() = viewModelJob + Dispatchers.Default
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 
-    init {
-        setRestaurant("Restaurante")
+    fun getState(): MutableLiveData<ScreenState<RestaurantState>> {
+        return states
     }
 
-    val fetchRestaurantsList = restaurantData.distinctUntilChanged().switchMap {nombreRestaurante ->
-        liveData(Dispatchers.IO) {
-            emit(Resource.Loading())
-            try {
-                emit(repo.getRestaurantList(nombreRestaurante))
-            } catch (e: Exception) {
-                emit(Resource.Failure(e))
+    fun getRestaurantData() {
+        states.value = ScreenState.Loading
+        viewModelScope.launch {
+            repository.getRestaurantData()?.body()?.let {
+                states.value = ScreenState.Render(RestaurantState.ShowRestaurantData(it.company))
+            } ?: run {
+                states.value = ScreenState.ErrorServer
             }
         }
     }
+
+
+
 }

@@ -8,5 +8,6 @@ import retrofit2.http.Query
  */
 interface WebService {
 
-    suspend fun getRestaurantByName(@Query(value = "s") restaurantName: String): RestaurantList
+    suspend fun getRestaurantByName(@Query(value = "token") tokenValue: String)
+            : RestaurantResponse
 }
