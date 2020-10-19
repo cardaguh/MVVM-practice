@@ -57,10 +57,7 @@ class MainFragment : Fragment() {
                         }
                         ScreenState.InternetError -> {
                             //hide progress
-                            view?.let { mView ->
-                                Snackbar.make(mView, getString(R.string.no_internet_found), Snackbar.LENGTH_LONG)
-                                        .setAction(getString(R.string.ok_label), null).show()
-                            }
+                           
                         }
 
                         ScreenState.ErrorServer -> {
