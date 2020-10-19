@@ -19,17 +19,17 @@ import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment() {
 
-    private val viewModel by viewModels<MainViewModel> { VMFactory(
-        RepoImpl(DataSourceImpl())
-    ) }
+    private lateinit var restaurantViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        restaurantViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        restaurantViewModel.getState().observe(this, Observer { onChanged(it) })
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main, container, false)
@@ -38,20 +38,60 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        setupObservers()
     }
 
-    private fun setupObservers() {
-        viewModel.fetchRestaurantsList.observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
-                is Resource.Loading -> {
 
+    /**
+     * Validate answers
+     * @param screenState screenState type to validate
+     */
+    private fun onChanged(screenState: ScreenState<ScreenState>?) {
+        this@MainFragment.context?.let {
+            screenState?.let {
+                if (screenState is ScreenState.Render) {
+                    updateUI(screenState.renderState)
+                } else {
+                    when (screenState) {
+                        ScreenState.Loading -> {
+                            //show progress
+                        }
+                        ScreenState.InternetError -> {
+                            //hide progress
+                            view?.let { mView ->
+                                Snackbar.make(mView, getString(R.string.no_internet_found), Snackbar.LENGTH_LONG)
+                                        .setAction(getString(R.string.ok_label), null).show()
+                            }
+                        }
+
+                        ScreenState.ErrorServer -> {
+                        }
+                        else -> {
+                            //hide progress
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Validate different kind of response
+     * @param renderState type de renderState to validate
+     */
+    private fun updateUI(renderState: Any) {
+        this@MainFragment.context?.let {
+            when (renderState) {
+                is RestaurantState.ShowRestaurantData -> {
+                  val company = renderState.company
                 }
 
-
+                else -> {
+                    //hide progress
+                }
             }
-        })
+        }
     }
+
 
     private fun setupRecyclerView() {
         rv_restaurants.layoutManager = LinearLayoutManager(requireContext())
