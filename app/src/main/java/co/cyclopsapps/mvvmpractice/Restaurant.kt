@@ -1,4 +1,4 @@
-package co.cyclopsapps.mvvmpractice.data
+package co.cyclopsapps.mvvmpractice
 
 /**
  * Created by Carlos Daniel Agudelo on 11/10/2020.

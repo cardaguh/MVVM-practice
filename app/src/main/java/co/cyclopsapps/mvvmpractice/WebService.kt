@@ -1,6 +1,6 @@
-package co.cyclopsapps.mvvmpractice.domain
+package co.cyclopsapps.mvvmpractice
 
-import co.cyclopsapps.mvvmpractice.data.RestaurantList
+//import co.cyclopsapps.mvvmpractice.data.RestaurantList
 import retrofit2.http.Query
 
 /**

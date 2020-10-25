@@ -1,11 +1,11 @@
-package co.cyclopsapps.mvvmpractice.presentation.viewmodel
+package co.cyclopsapps.mvvmpractice
 
 import androidx.lifecycle.*
-import co.cyclopsapps.mvvmpractice.data.Restaurant
-import co.cyclopsapps.mvvmpractice.domain.Repo
-import co.cyclopsapps.mvvmpractice.utils.Resource
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.lang.Exception
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by Carlos Daniel Agudelo on 11/10/2020.
@@ -31,14 +31,11 @@ class MainViewModel: ViewModel(), CoroutineScope {
     fun getRestaurantData() {
         states.value = ScreenState.Loading
         viewModelScope.launch {
-            repository.getRestaurantData()?.body()?.let {
-                states.value = ScreenState.Render(RestaurantState.ShowRestaurantData(it.company))
+            //repository.getRestaurantData()?.body()?.let {
+                //states.value = ScreenState.Render(RestaurantState.ShowRestaurantData(it.company))
             } ?: run {
                 states.value = ScreenState.ErrorServer
             }
         }
     }
 
-
-
-}

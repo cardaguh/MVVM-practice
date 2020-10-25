@@ -1,6 +1,5 @@
-package co.cyclopsapps.mvvmpractice.data
+package co.cyclopsapps.mvvmpractice
 
-import co.cyclopsapps.mvvmpractice.domain.WebService
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

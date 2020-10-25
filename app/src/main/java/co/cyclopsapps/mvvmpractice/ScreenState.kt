@@ -1,3 +1,5 @@
+package co.cyclopsapps.mvvmpractice
+
 sealed class ScreenState<out T> {
     object Loading : ScreenState<Nothing>()
     object Refresh : ScreenState<Nothing>()
