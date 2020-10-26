@@ -5,39 +5,50 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_main.*
+import co.cyclopsapps.mvvmpractice.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
 
+    // BINDING
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var restaurantViewModel: MainViewModel
+
+    private  lateinit var adapter: RestaurantAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         restaurantViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        //restaurantViewModel.getState().observe(this, Observer { onChanged(it) })
-
+        restaurantViewModel.getState().observe(this, Observer { onChanged(it) })
     }
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
-        button.setOnClickListener { view ->
-            view.findNavController().navigate(R.id.detailFragment)
+        with(binding){
+            button.setOnClickListener { view ->
+                restaurantViewModel.getRestaurantData()
+               // view.findNavController().navigate(R.id.detailFragment)
+            }
         }
+
+
     }
 
 
@@ -45,7 +56,7 @@ class MainFragment : Fragment() {
      * Validate answers
      * @param screenState screenState type to validate
      */
-   /* private fun onChanged(screenState: ScreenState<ScreenState>?) {
+    private fun onChanged(screenState: ScreenState<RestaurantState>?) {
         this@MainFragment.context?.let {
             screenState?.let {
                 if (screenState is ScreenState.Render) {
@@ -53,23 +64,26 @@ class MainFragment : Fragment() {
                 } else {
                     when (screenState) {
                         ScreenState.Loading -> {
-                            //show progress
+                            binding.progress.isVisible = true
                         }
                         ScreenState.InternetError -> {
-                            //hide progress
+                            binding.progress.isVisible = false
                            
                         }
 
                         ScreenState.ErrorServer -> {
+                            binding.progress.isVisible = false
+                            // show error
                         }
                         else -> {
-                            //hide progress
+                            binding.progress.isVisible = false
+
                         }
                     }
                 }
             }
         }
-    }*/
+    }
 
     /**
      * Validate different kind of response
@@ -79,11 +93,16 @@ class MainFragment : Fragment() {
         this@MainFragment.context?.let {
             when (renderState) {
                 is RestaurantState.ShowRestaurantData -> {
-                  //val company = renderState.company
+
+                    val restaurantFakeList: MutableList<Restaurant> = mutableListOf<Restaurant>()
+                    restaurantFakeList.add(renderState.restauratData)
+                    adapter.setRestaurantList(restaurantFakeList)
+                    binding.progress.isVisible = false
+
                 }
 
                 else -> {
-                    //hide progress
+                    binding.progress.isVisible = false
                 }
             }
         }
@@ -91,7 +110,17 @@ class MainFragment : Fragment() {
 
 
     private fun setupRecyclerView() {
-        rv_restaurants.layoutManager = LinearLayoutManager(requireContext())
-        rv_restaurants.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+         adapter = RestaurantAdapter()
+        with(binding){
+            rvRestaurants.layoutManager = LinearLayoutManager(requireContext())
+            rvRestaurants.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            rvRestaurants.adapter = adapter
+        }
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

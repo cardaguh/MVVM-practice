@@ -28,14 +28,17 @@ class MainViewModel: ViewModel(), CoroutineScope {
         return states
     }
 
+
     fun getRestaurantData() {
         states.value = ScreenState.Loading
         viewModelScope.launch {
-            //repository.getRestaurantData()?.body()?.let {
-                //states.value = ScreenState.Render(RestaurantState.ShowRestaurantData(it.company))
+            repository.getRestaurant()?.body()?.let {
+                states.value = ScreenState.Render(RestaurantState.ShowRestaurantData(it.company))
             } ?: run {
                 states.value = ScreenState.ErrorServer
             }
         }
     }
+
+}
 
