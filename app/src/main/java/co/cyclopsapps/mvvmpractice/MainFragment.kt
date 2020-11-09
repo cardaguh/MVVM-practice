@@ -23,7 +23,7 @@ class MainFragment : Fragment(), OnCustomClickListener {
 
     private lateinit var restaurantViewModel: MainViewModel
 
-    private  lateinit var adapter: RestaurantAdapter
+    private lateinit var adapter: RestaurantAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +32,8 @@ class MainFragment : Fragment(), OnCustomClickListener {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
@@ -43,7 +43,8 @@ class MainFragment : Fragment(), OnCustomClickListener {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
-        with(binding){
+        
+        with(binding) {
             button.setOnClickListener { view ->
                 restaurantViewModel.getRestaurantData()
             }
@@ -69,7 +70,7 @@ class MainFragment : Fragment(), OnCustomClickListener {
                         }
                         ScreenState.InternetError -> {
                             binding.progress.isVisible = false
-                           
+
                         }
 
                         ScreenState.ErrorServer -> {
@@ -111,12 +112,16 @@ class MainFragment : Fragment(), OnCustomClickListener {
         //Recibe interfaz y el otro recibe función
 
         //Primeor pasamos interfaz y el segundo paramatro es una función
-         adapter = RestaurantAdapter(this, ::onCategoryClickListener)
+        adapter = RestaurantAdapter(this, ::onCategoryClickListener)
 
-        with(binding){
+        with(binding) {
             rvRestaurants.layoutManager = LinearLayoutManager(requireContext())
-            rvRestaurants.addItemDecoration(DividerItemDecoration(requireContext(),
-                DividerItemDecoration.VERTICAL))
+            rvRestaurants.addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
             rvRestaurants.adapter = adapter
         }
     }
@@ -135,19 +140,24 @@ class MainFragment : Fragment(), OnCustomClickListener {
         Toast.makeText(context, "Mi imagen click1 $img", Toast.LENGTH_SHORT).show()
         // Aqui haces la funcionalidad de abrir el detalle
 
-        activity?.supportFragmentManager
-            ?.beginTransaction()
-            ?.replace(android.R.id.content, CategoryFragment.newInstance())
-            ?.addToBackStack(null)
-            ?.commitNow()
+        openDetail()
     }
 
     //2 Con una función (Listener)
     //No tienes que estar creando interfaces
     private fun onCategoryClickListener(img: String) {
+        openDetail()
+
         Toast.makeText(context, "Mi imagen click2 $img", Toast.LENGTH_SHORT).show()
     }
 
 
+    private fun openDetail() {
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.add(android.R.id.content, CategoryFragment.newInstance())
+            ?.addToBackStack(null)
+            ?.commit()
+    }
 
 }
