@@ -7,19 +7,35 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class RestaurantResponse (
-        val company: Restaurant
+        val company: Restaurant,
+        val category: MutableList<CategoryData>? = mutableListOf()
 )
 
 data class Restaurant (
     @SerializedName("id")
     val restaurantId: String = "",
 
+    //Esto lo puse en el caso que tuvieses
+    // un campo con nombre extraño
     @SerializedName("img")
+
+    //Nombre al que se accede como atributo
     val imagen: String = "",
 
-    @SerializedName("name")
-    val nombre: String = "",
 
+    val name: String = "",
+
+    //Esto lo puse en el caso que tuvieses
+    // un campo con nombre extraño
     @SerializedName("calle")
+
+    //Nombre al que se accede como atributo
     val description: String = ""
+)
+
+
+data class CategoryData(
+    val id: Int,
+    val img: String = "",
+    val name: String = ""
 )

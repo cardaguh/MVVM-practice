@@ -5,6 +5,6 @@ package co.cyclopsapps.mvvmpractice
  */
 sealed class RestaurantState {
     class ShowRestaurantData(
-            var restauratData: Restaurant
+            var response: RestaurantResponse
     ) : RestaurantState()
 }

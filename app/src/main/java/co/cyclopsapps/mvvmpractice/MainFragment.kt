@@ -5,15 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import co.cyclopsapps.mvvmpractice.category.CategoryFragment
+import co.cyclopsapps.mvvmpractice.category.OnCustomClickListener
 import co.cyclopsapps.mvvmpractice.databinding.FragmentMainBinding
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), OnCustomClickListener {
 
     // BINDING
     private var _binding: FragmentMainBinding? = null
@@ -44,7 +46,6 @@ class MainFragment : Fragment() {
         with(binding){
             button.setOnClickListener { view ->
                 restaurantViewModel.getRestaurantData()
-               // view.findNavController().navigate(R.id.detailFragment)
             }
         }
 
@@ -93,10 +94,7 @@ class MainFragment : Fragment() {
         this@MainFragment.context?.let {
             when (renderState) {
                 is RestaurantState.ShowRestaurantData -> {
-
-                    val restaurantFakeList: MutableList<Restaurant> = mutableListOf<Restaurant>()
-                    restaurantFakeList.add(renderState.restauratData)
-                    adapter.setRestaurantList(restaurantFakeList)
+                    adapter.setRestaurantData(renderState.response)
                     binding.progress.isVisible = false
 
                 }
@@ -110,10 +108,15 @@ class MainFragment : Fragment() {
 
 
     private fun setupRecyclerView() {
-         adapter = RestaurantAdapter()
+        //Recibe interfaz y el otro recibe función
+
+        //Primeor pasamos interfaz y el segundo paramatro es una función
+         adapter = RestaurantAdapter(this, ::onCategoryClickListener)
+
         with(binding){
             rvRestaurants.layoutManager = LinearLayoutManager(requireContext())
-            rvRestaurants.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            rvRestaurants.addItemDecoration(DividerItemDecoration(requireContext(),
+                DividerItemDecoration.VERTICAL))
             rvRestaurants.adapter = adapter
         }
     }
@@ -123,4 +126,28 @@ class MainFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    //FORMAS DE USAR EL CLICK LISTENES
+
+    //1 Con Interfaces
+    // Crear interface e implementar funciones
+    override fun showCategoryDetail(img: String) {
+        Toast.makeText(context, "Mi imagen click1 $img", Toast.LENGTH_SHORT).show()
+        // Aqui haces la funcionalidad de abrir el detalle
+
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.replace(android.R.id.content, CategoryFragment.newInstance())
+            ?.addToBackStack(null)
+            ?.commitNow()
+    }
+
+    //2 Con una función (Listener)
+    //No tienes que estar creando interfaces
+    private fun onCategoryClickListener(img: String) {
+        Toast.makeText(context, "Mi imagen click2 $img", Toast.LENGTH_SHORT).show()
+    }
+
+
+
 }

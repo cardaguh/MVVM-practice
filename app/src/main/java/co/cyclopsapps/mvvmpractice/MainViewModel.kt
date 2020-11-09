@@ -15,6 +15,8 @@ class MainViewModel: ViewModel(), CoroutineScope {
     private val states: MutableLiveData<ScreenState<RestaurantState>> = MutableLiveData()
     private val repository = RestaurantRepository()
 
+    var restaurantResponse: RestaurantResponse? = null
+
     private val viewModelJob = Job()
     override val coroutineContext: CoroutineContext
         get() = viewModelJob + Dispatchers.Default
@@ -33,7 +35,8 @@ class MainViewModel: ViewModel(), CoroutineScope {
         states.value = ScreenState.Loading
         viewModelScope.launch {
             repository.getRestaurant()?.body()?.let {
-                states.value = ScreenState.Render(RestaurantState.ShowRestaurantData(it.company))
+                restaurantResponse = it
+                states.value = ScreenState.Render(RestaurantState.ShowRestaurantData(it))
             } ?: run {
                 states.value = ScreenState.ErrorServer
             }

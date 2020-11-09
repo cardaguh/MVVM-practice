@@ -6,11 +6,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import co.cyclopsapps.mvvmpractice.category.OnCustomClickListener
 import com.bumptech.glide.Glide
 
-class RestaurantAdapter: RecyclerView.Adapter<RestaurantAdapter.MyHolder>() {
+class RestaurantAdapter(
+    private val onCustomClickListener1: OnCustomClickListener,
+    private val onCustomClickListener2: (img: String) -> Unit
 
-    private var  restaurantList: MutableList<Restaurant> = mutableListOf()
+): RecyclerView.Adapter<RestaurantAdapter.MyHolder>() {
+
+    private var  categoryList: MutableList<CategoryData> = mutableListOf()
+    private var restaurant: Restaurant? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.restaurant_row, parent, false)
@@ -18,24 +24,36 @@ class RestaurantAdapter: RecyclerView.Adapter<RestaurantAdapter.MyHolder>() {
     }
 
 
-    fun setRestaurantList(newDataList : MutableList<Restaurant>) {
-        restaurantList.clear()
-        restaurantList.addAll(newDataList)
+    fun setRestaurantData(response : RestaurantResponse) {
+        restaurant = response.company
+
+        response?.category?.let {
+            categoryList.clear()
+            categoryList.addAll(it)
+        }
         notifyDataSetChanged()
   }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        val restaurantData = restaurantList[position]
+        val category = categoryList[position]
 
-        with(restaurantData) {
-            Glide.with(holder.itemView.context).load(imagen).into(holder.imgRestaurant)
-            holder.txtResturantTitle.text = nombre
-
+        //Permite acceder a los componentes sin tener que estar escribiendo
+        // category.name o category.img
+        with(category) {
+            Glide.with(holder.itemView.context).load(img).into(holder.imgRestaurant)
+            holder.txtResturantTitle.text = name
         }
+
+
+        holder.itemView.setOnClickListener {
+            //onCustomClickListener1.showCategoryDetail(category.img)
+            onCustomClickListener2(category.img)
+        }
+
     }
 
     override fun getItemCount(): Int {
-        return restaurantList.size
+        return categoryList.size
     }
 
 
